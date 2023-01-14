@@ -104,8 +104,14 @@ public class AnimPanel extends JPanel implements ActionListener {
 	}
 
 	public void changeEllipColor() {	//zmiana koloru elips
-		for (int i= 1; i < figures.size(); i = i + 2) {
+		for (int i = 1; i < figures.size(); i = i + 2) {
 			figures.get(i).setClr(AnimatorApp.getChosenColor());
+		}
+	}
+
+	public void changeFigColor() {
+		for (Figure figure : figures) {
+			figure.setClr(AnimatorApp.getChosenColor());
 		}
 	}
 

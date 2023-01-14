@@ -12,7 +12,7 @@ public class AnimatorApp extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JButton btnInfo, btnAdd, btnAnimate, btnReset, btnRectColor, btnEllipColor, btnRectFreeze, btnEllipFreeze;
+	private JButton btnInfo, btnAdd, btnAnimate, btnReset, btnRectColor, btnEllipColor, btnColor, btnRectFreeze, btnEllipFreeze;
 	private JLabel ltitle, ldelay, lcolors, lFreeze;
 	private JComboBox speedBox;
 	private static Color colorOfBtn = new Color(100, 137, 160),	//kolor przycisków (ewentualnie innych komponentów)
@@ -43,7 +43,7 @@ public class AnimatorApp extends JFrame {
 	public AnimatorApp() {
 		//pobieramy rozmiary ekranu aby wyświetlić okno na jego środku
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-		int windowWidth = 450, windowHeight = 500;
+		int windowWidth = 450, windowHeight = 550;
 		setBounds((screen.width-windowWidth)/2, (screen.height-windowHeight)/2, windowWidth, windowHeight);
 		setTitle("Animator App");
 
@@ -143,8 +143,7 @@ public class AnimatorApp extends JFrame {
 		btnRectColor.setToolTipText("Change color of all rectangles");
 		contentPane.add(btnRectColor);
 		btnRectColor.addActionListener(e -> {
-			chosenColor = Objects.requireNonNull(JColorChooser.showDialog(null, "Choose color!", Color.PINK),
-															 			  "Color cannot be a null");
+			chooseColor();
 			canva.changeRectColor();
 		});
 
@@ -155,19 +154,30 @@ public class AnimatorApp extends JFrame {
 		btnEllipColor.setToolTipText("Change color of all ellipses");
 		contentPane.add(btnEllipColor);
 		btnEllipColor.addActionListener(e -> {
-			chosenColor = Objects.requireNonNull(JColorChooser.showDialog(null, "Choose color", Color.PINK),
-																		  "Color cannot be a null");
+			chooseColor();
 			canva.changeEllipColor();
 		});
 
+		btnColor = new JButton("All Figures");
+		btnColor.setBounds(230, 380, 100, 30);
+		btnColor.setFont(fontOfBtn);
+		btnColor.setBackground(colorOfBtn);
+		btnColor.setToolTipText("Change color of all figures");
+		contentPane.add(btnColor);
+		btnColor.addActionListener(e -> {
+			chooseColor();
+			canva.changeFigColor();
+		});
+
+
 		lFreeze = new JLabel("Freeze only ->");		//etykieta zamrażania
-		lFreeze.setBounds(50, 400, 150, 30);
+		lFreeze.setBounds(50, 440, 150, 30);
 		lFreeze.setFont(fontOfLabels);
 		lFreeze.setForeground(colorOfLabels);
 		contentPane.add(lFreeze);
 
 		btnRectFreeze = new JButton("Rectangles");		//przycisk zamrożenia prostokątów
-		btnRectFreeze.setBounds(170, 400, 100, 30);
+		btnRectFreeze.setBounds(170, 440, 100, 30);
 		btnRectFreeze.setFont(fontOfBtn);
 		btnRectFreeze.setBackground(colorOfBtn);
 		btnRectFreeze.setToolTipText("Freeze all rectangles");
@@ -177,7 +187,7 @@ public class AnimatorApp extends JFrame {
 		});
 
 		btnEllipFreeze = new JButton("Ellipses");		//przycisk zamrożenia elips
-		btnEllipFreeze.setBounds(280, 400, 100, 30);
+		btnEllipFreeze.setBounds(280, 440, 100, 30);
 		btnEllipFreeze.setFont(fontOfBtn);
 		btnEllipFreeze.setBackground(colorOfBtn);
 		btnEllipFreeze.setToolTipText("Freeze all ellipses");
@@ -204,5 +214,10 @@ public class AnimatorApp extends JFrame {
 
 	public static Color getChosenColor() {		//getter zmiennej chosenColor
 		return chosenColor;
+	}
+
+	public static void chooseColor() {
+		chosenColor = Objects.requireNonNull(JColorChooser.showDialog(null, "Choose color", Color.PINK),
+									 "Color cannot be a null");
 	}
 }
