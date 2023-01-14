@@ -12,12 +12,13 @@ import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author tb
  *
  */
-public abstract class Figura implements Runnable, ActionListener/*, Shape*/ {
+public abstract class Figure implements Runnable, ActionListener/*, Shape*/ {
 
 	// wspolny bufor
 	protected Graphics2D buffer;
@@ -33,15 +34,16 @@ public abstract class Figura implements Runnable, ActionListener/*, Shape*/ {
 	private double sf;
 	// kat obrotu
 	private double an;
-	private int delay;
+	private AtomicInteger delay = new AtomicInteger();	//klasa dzięki której int może być automatycznie updatowany
 	private int width;
 	private int height;
 	private Color clr;
-
+	private static boolean paused = false;	//pauza(nieaktywna)
+	private boolean freeze;
 	protected static final Random rand = new Random();
 
-	public Figura(Graphics2D buf, int del, int w, int h) {
-		delay = del;
+	public Figure(Graphics2D buf, int del, int w, int h) {
+		delay.set(del);
 		buffer = buf;
 		width = w;
 		height = h;
@@ -50,8 +52,8 @@ public abstract class Figura implements Runnable, ActionListener/*, Shape*/ {
 		dy = 1 + rand.nextInt(5);
 		sf = 1 + 0.05 * rand.nextDouble();
 		an = 0.1 * rand.nextDouble();
-
 		clr = new Color(rand.nextInt(255), rand.nextInt(255), rand.nextInt(255), rand.nextInt(255));
+		freeze = false;
 		// reszta musi być zawarta w realizacji klasy Figure
 		// (tworzenie figury i przygotowanie transformacji)
 
@@ -63,12 +65,11 @@ public abstract class Figura implements Runnable, ActionListener/*, Shape*/ {
 		aft.translate(100, 100);
 		area.transform(aft);
 		shape = area;
-
 		while (true) {
 			// przygotowanie nastepnego kadru
 			shape = nextFrame();
 			try {
-				Thread.sleep(delay);
+				Thread.sleep(delay.get());
 			} catch (InterruptedException e) {
 			}
 		}
@@ -82,22 +83,27 @@ public abstract class Figura implements Runnable, ActionListener/*, Shape*/ {
 		Rectangle bounds = area.getBounds();
 		int cx = bounds.x + bounds.width / 2;
 		int cy = bounds.y + bounds.height / 2;
-		// odbicie
-		if (cx < 0 || cx > width)
-			dx = -dx;
-		if (cy < 0 || cy > height)
-			dy = -dy;
-		// zwiekszenie lub zmniejszenie
-		if (bounds.height > height / 3 || bounds.height < 10)
-			sf = 1 / sf;
-		// konstrukcja przeksztalcenia
-		aft.translate(cx, cy);
-		aft.scale(sf, sf);
-		aft.rotate(an);
-		aft.translate(-cx, -cy);
-		aft.translate(dx, dy);
-		// przeksztalcenie obiektu
-		area.transform(aft);
+
+		if(!paused) {	//poruszanie tylko wtedy kiedy pauza jest nieaktywna (paused == false)
+			if (!freeze){	//każda figura ma przypisane pole freeze
+				// odbicie
+				if (cx - bounds.width/2 <= 0 || cx + bounds.width/2 >= width) dx = - dx;
+
+				if (cy - bounds.height/2 <= 0 || cy + bounds.height >= height) dy = - dy;
+
+				// zwiekszenie lub zmniejszenie
+				if (bounds.height > height / 3 || bounds.height < 10)
+					sf = 1 / sf;
+				// konstrukcja przeksztalcenia
+				aft.translate(cx, cy);
+				aft.scale(sf, sf);
+				aft.rotate(an);
+				aft.translate(-cx, -cy);
+				aft.translate(dx, dy);
+				// przeksztalcenie obiektu
+				area.transform(aft);
+			}
+		}
 		return area;
 	}
 
@@ -111,4 +117,23 @@ public abstract class Figura implements Runnable, ActionListener/*, Shape*/ {
 		buffer.draw(shape);
 	}
 
+	public static void setPaused(boolean paused) {
+		Figure.paused = paused;
+	}
+
+	public void setFreeze(boolean freeze) {
+		this.freeze = freeze;
+	}
+
+	public boolean getFreeze() {
+		return this.freeze;
+	}
+
+	public AtomicInteger getDelay() {
+		return delay;
+	}
+
+	public void setClr(Color clr) {
+		this.clr = clr;
+	}
 }
