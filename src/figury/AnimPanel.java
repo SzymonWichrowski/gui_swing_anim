@@ -7,6 +7,7 @@ import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -34,7 +35,6 @@ public class AnimPanel extends JPanel implements ActionListener {
 		super();
 		setBackground(Color.WHITE);
 		timer = new Timer(delay, this);
-
 	}
 
 	public void initialize() {
@@ -131,5 +131,49 @@ public class AnimPanel extends JPanel implements ActionListener {
 			}
 			else figures.get(i).setFreeze(false);	//odmrożenie
 		}
+	}
+
+	public void figuresPirouettes() {
+		for (Figure figure : figures) {
+			pirouettesSetting(figure);
+		}
+	}
+
+	public void rectPirouettes() {
+		for (int i = 0; i < figures.size(); i = i + 2) {
+			pirouettesSetting(figures.get(i));
+		}
+	}
+
+	public void ellipPirouettes() {
+		for (int i = 1; i < figures.size(); i = i + 2) {
+			pirouettesSetting(figures.get(i));
+		}
+	}
+
+	public void pirouettesSetting(Figure f) {
+		f.setDx(0);
+		f.setDy(0);
+		f.setAn(1);
+	}
+
+	public void pirouettesEnd() {
+		Random random = new Random();
+		int dx, dy;
+		double an;
+		dx = 1 + random.nextInt(5);
+		dy = 1 + random.nextInt(5);
+		an = 0.1 * random.nextDouble();
+		for (Figure figure : figures) {
+			if(figure.getDx() == 0 && figure.getDy() == 0 && figure.getAn() == 1) {
+				figure.setDx(dx);
+				figure.setDy(dy);
+				figure.setAn(an);
+			}
+		}
+	}
+
+	public static void setNumber(int number) {
+		AnimPanel.number = number;
 	}
 }

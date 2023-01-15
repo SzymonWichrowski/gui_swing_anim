@@ -86,18 +86,24 @@ public abstract class Figure implements Runnable, ActionListener/*, Shape*/ {
 
 		if(!paused) {	//poruszanie tylko wtedy kiedy pauza jest nieaktywna (paused == false)
 			if (!freeze){	//każda figura ma przypisane pole freeze
-				// odbicie
-				if (cx - bounds.width/2 <= 0 || cx + bounds.width/2 >= width) dx = - dx;
 
-				if (cy - bounds.height/2 <= 0 || cy + bounds.height >= height) dy = - dy;
+				// odbicie
+				if (cx + bounds.width/2 <= bounds.width) dx = Math.abs(dx);
+
+				if (cx - bounds.width/2 >= width - bounds.width && dx > 0) dx = -dx;
+
+				if (cy + bounds.height/2 <= bounds.height) dy = Math.abs(dy);
+
+				if (cy - bounds.height/2 >= height - bounds.height && dy > 0) dy = -dy;
 
 				// zwiekszenie lub zmniejszenie
 				if (bounds.height > height / 3 || bounds.height < 10)
 					sf = 1 / sf;
+
 				// konstrukcja przeksztalcenia
 				aft.translate(cx, cy);
-				aft.scale(sf, sf);
-				aft.rotate(an);
+				aft.scale(sf, sf);				//skalowanie po zwiekszeniu/zmniejszeniu
+				aft.rotate(an);					//rotacja na podstawie kąta an
 				aft.translate(-cx, -cy);
 				aft.translate(dx, dy);
 				// przeksztalcenie obiektu
@@ -135,5 +141,29 @@ public abstract class Figure implements Runnable, ActionListener/*, Shape*/ {
 
 	public void setClr(Color clr) {
 		this.clr = clr;
+	}
+
+	public void setAn(double an) {
+		this.an = an;
+	}
+
+	public void setDx(int dx) {
+		this.dx = dx;
+	}
+
+	public void setDy(int dy) {
+		this.dy = dy;
+	}
+
+	public double getAn() {
+		return an;
+	}
+
+	public int getDx() {
+		return dx;
+	}
+
+	public int getDy() {
+		return dy;
 	}
 }

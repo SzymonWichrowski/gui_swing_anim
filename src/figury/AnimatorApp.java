@@ -1,9 +1,8 @@
 package figury;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.Objects;
-
-import javax.swing.*;
 
 public class AnimatorApp extends JFrame {
 
@@ -12,9 +11,12 @@ public class AnimatorApp extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JButton btnInfo, btnAdd, btnAnimate, btnReset, btnRectColor, btnEllipColor, btnColor, btnRectFreeze, btnEllipFreeze;
-	private JLabel ltitle, ldelay, lcolors, lFreeze;
-	private JComboBox speedBox;
+	private JButton btnInfo, btnAdd, btnAnimate, btnReset, 
+					btnRectColor, btnEllipColor, btnColor, 
+					btnRectFreeze, btnEllipFreeze,
+					btnSpinOn, btnSpinOff;
+	private JLabel ltitle, ldelay, lcolors, lFreeze, lSpin;
+	private JComboBox speedBox, spinBox;
 	private static Color colorOfBtn = new Color(100, 137, 160),	//kolor przycisków (ewentualnie innych komponentów)
 				   colorOfLabels = new Color(180, 91, 149),	//kolor etykiet
 				   chosenColor;
@@ -43,7 +45,7 @@ public class AnimatorApp extends JFrame {
 	public AnimatorApp() {
 		//pobieramy rozmiary ekranu aby wyświetlić okno na jego środku
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-		int windowWidth = 450, windowHeight = 550;
+		int windowWidth = 450, windowHeight = 620;
 		setBounds((screen.width-windowWidth)/2, (screen.height-windowHeight)/2, windowWidth, windowHeight);
 		setTitle("Animator App");
 
@@ -58,7 +60,7 @@ public class AnimatorApp extends JFrame {
 		contentPane.add(canva);
 		SwingUtilities.invokeLater(() -> canva.initialize());
 
-		ltitle = new JLabel("Simple Animation Creator");
+		ltitle = new JLabel("Simple Animation Creator");	//tytuł
 		ltitle.setBounds(125, 10,250 , 30);
 		ltitle.setFont(fontOfLabels);
 		ltitle.setForeground(colorOfLabels);
@@ -108,6 +110,7 @@ public class AnimatorApp extends JFrame {
 			AnimatorApp frame = new AnimatorApp();
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			frame.setVisible(true);
+			AnimPanel.setNumber(0);		//musimy przypisać number wartość początkową
 		});
 
 		ldelay = new JLabel("Speed");
@@ -158,7 +161,7 @@ public class AnimatorApp extends JFrame {
 			canva.changeEllipColor();
 		});
 
-		btnColor = new JButton("All Figures");
+		btnColor = new JButton("All Figures");			//wybor koloru wszystkich figur
 		btnColor.setBounds(230, 380, 100, 30);
 		btnColor.setFont(fontOfBtn);
 		btnColor.setBackground(colorOfBtn);
@@ -195,6 +198,55 @@ public class AnimatorApp extends JFrame {
 		btnEllipFreeze.addActionListener(e -> {
 			canva.freezeEllip();
 		});
+
+		lSpin = new JLabel("Spinning");		//etykieta obrotów
+		lSpin.setBounds(175, 490, 100, 30);
+		lSpin.setFont(fontOfLabels);
+		lSpin.setForeground(colorOfLabels);
+		contentPane.add(lSpin);
+
+		btnSpinOn = new JButton("spinning ON");		//aktywacja obrotów
+		btnSpinOn.setBounds(20, 530, 110, 30);
+		btnSpinOn.setFont(fontOfBtn);
+		btnSpinOn.setBackground(colorOfBtn);
+		contentPane.add(btnSpinOn);
+		btnSpinOn.addActionListener(e -> {
+			btnSpinOff.setEnabled(true);
+			switch (Objects.requireNonNull(spinBox.getSelectedItem()).toString()){
+				case "All figures": {
+					canva.figuresPirouettes();
+				}
+				break;
+				case "Rectangles": {
+					canva.rectPirouettes();
+				}
+				break;
+				case "Ellipses" : {
+					canva.ellipPirouettes();
+				}
+				break;
+			}
+		});
+
+		spinBox = new JComboBox();		//wybór figur do obrotów
+		spinBox.setBounds(140, 530, 100, 30);
+		spinBox.setFont(fontOfBtn);
+		spinBox.setBackground(colorOfBtn);
+		spinBox.addItem("All figures");
+		spinBox.addItem("Rectangles");
+		spinBox.addItem("Ellipses");
+		contentPane.add(spinBox);
+
+		btnSpinOff = new JButton("spinning OFF");		//wyłączenie obrotów
+		btnSpinOff.setBounds(280, 530, 115, 30);
+		btnSpinOff.setFont(fontOfBtn);
+		btnSpinOff.setBackground(colorOfBtn);
+		btnSpinOff.setEnabled(false);
+		contentPane.add(btnSpinOff);
+		btnSpinOff.addActionListener(e -> {
+			canva.pirouettesEnd();
+			btnSpinOff.setEnabled(false);
+		});
 	}
 
 	public String message() {		//instrukcja do programu
@@ -202,9 +254,10 @@ public class AnimatorApp extends JFrame {
 				"   'Add' button should be available from now on.\n" +
 				"2) Click on 'Add' button to add new figures to animation\n" +
 				"3) You can change speed of animation (3 modes)\n" +
-				"4) You can also change color of both rectangles and ellipses at your discretion\n" +
-				"5) The last interesting function is freezing one of two available shapes\n" +
-				"6) Of course you can also reset whole app at any moment (button 'Reset')\n" +
+				"4) You can also change color of both rectangles and ellipses drawn on the screen at your discretion\n" +
+				"5) Next interesting function is freezing only one of two available shapes\n" +
+				"6)	The last but definitely not least is possibility of making figures spin in place. (very fast) \n" +
+				"7) Of course button 'Reset' will reset whole app at any moment\n" +
 				"That's all. Have fun :)";
 	}
 
