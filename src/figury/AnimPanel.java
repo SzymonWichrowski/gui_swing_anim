@@ -1,18 +1,17 @@
 package figury;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Random;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-public class AnimPanel extends JPanel implements ActionListener {
+public class AnimPanel extends JPanel implements ActionListener, MouseListener {
 	/**
 	 * 
 	 */
@@ -26,15 +25,14 @@ public class AnimPanel extends JPanel implements ActionListener {
 	Graphics2D buffer;
 	ArrayList<Figure> figures = new ArrayList<>();	//lista figur
 	private int delay = 70, width, height;
-
-	private Timer timer;
-
+	private Timer timer, colorTimer;
 	private static int number = 0;
 
 	public AnimPanel() {
 		super();
 		setBackground(Color.WHITE);
 		timer = new Timer(delay, this);
+		addMouseListener(this);
 	}
 
 	public void initialize() {
@@ -71,9 +69,17 @@ public class AnimPanel extends JPanel implements ActionListener {
 
 		Object source = e.getSource();
 
-		if(source == timer) {
+		if (source == timer) {
 			device.drawImage(image, 0, 0, null);
 			buffer.clearRect(0, 0, getWidth(), getHeight());
+		}
+
+		if (source == colorTimer) {
+			for (Figure figure : figures) {
+				Random random = new Random();
+				figure.setClr(new Color(random.nextInt(255), random.nextInt(255),
+										random.nextInt(255), random.nextInt(255)));
+			}
 		}
 	}
 
@@ -109,7 +115,7 @@ public class AnimPanel extends JPanel implements ActionListener {
 		}
 	}
 
-	public void changeFigColor() {
+	public void changeFigColor() {		//zmiana koloru figur
 		for (Figure figure : figures) {
 			figure.setClr(AnimatorApp.getChosenColor());
 		}
@@ -133,31 +139,31 @@ public class AnimPanel extends JPanel implements ActionListener {
 		}
 	}
 
-	public void figuresPirouettes() {
+	public void figuresSpin() {
 		for (Figure figure : figures) {
-			pirouettesSetting(figure);
+			spinSetting(figure);
 		}
 	}
 
-	public void rectPirouettes() {
+	public void rectSpin() {
 		for (int i = 0; i < figures.size(); i = i + 2) {
-			pirouettesSetting(figures.get(i));
+			spinSetting(figures.get(i));
 		}
 	}
 
-	public void ellipPirouettes() {
+	public void ellipSpin() {
 		for (int i = 1; i < figures.size(); i = i + 2) {
-			pirouettesSetting(figures.get(i));
+			spinSetting(figures.get(i));
 		}
 	}
 
-	public void pirouettesSetting(Figure f) {
+	public void spinSetting(Figure f) {
 		f.setDx(0);
 		f.setDy(0);
 		f.setAn(1);
 	}
 
-	public void pirouettesEnd() {
+	public void spinEnd() {
 		Random random = new Random();
 		int dx, dy;
 		double an;
@@ -175,5 +181,38 @@ public class AnimPanel extends JPanel implements ActionListener {
 
 	public static void setNumber(int number) {
 		AnimPanel.number = number;
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		for (Figure figure : figures) {
+			figure.setClrToRemember(figure.getClr());
+		}
+		colorTimer = new Timer(100, this);
+		colorTimer.start();
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		colorTimer.stop();
+		for (Figure figure : figures) {
+			figure.setClr(figure.getClrToRemember());
+		}
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+
 	}
 }

@@ -37,7 +37,7 @@ public abstract class Figure implements Runnable, ActionListener/*, Shape*/ {
 	private AtomicInteger delay = new AtomicInteger();	//klasa dzięki której int może być automatycznie updatowany
 	private int width;
 	private int height;
-	private Color clr;
+	private Color clr, clrToRemember;
 	private static boolean paused = false;	//pauza(nieaktywna)
 	private boolean freeze;
 	protected static final Random rand = new Random();
@@ -139,8 +139,20 @@ public abstract class Figure implements Runnable, ActionListener/*, Shape*/ {
 		return delay;
 	}
 
+	public Color getClr() {
+		return clr;
+	}
+
 	public void setClr(Color clr) {
 		this.clr = clr;
+	}
+
+	public Color getClrToRemember() {
+		return clrToRemember;
+	}
+
+	public void setClrToRemember(Color clr) {
+		this.clrToRemember = clr;
 	}
 
 	public void setAn(double an) {

@@ -214,15 +214,15 @@ public class AnimatorApp extends JFrame {
 			btnSpinOff.setEnabled(true);
 			switch (Objects.requireNonNull(spinBox.getSelectedItem()).toString()){
 				case "All figures": {
-					canva.figuresPirouettes();
+					canva.figuresSpin();
 				}
 				break;
 				case "Rectangles": {
-					canva.rectPirouettes();
+					canva.rectSpin();
 				}
 				break;
 				case "Ellipses" : {
-					canva.ellipPirouettes();
+					canva.ellipSpin();
 				}
 				break;
 			}
@@ -244,7 +244,7 @@ public class AnimatorApp extends JFrame {
 		btnSpinOff.setEnabled(false);
 		contentPane.add(btnSpinOff);
 		btnSpinOff.addActionListener(e -> {
-			canva.pirouettesEnd();
+			canva.spinEnd();
 			btnSpinOff.setEnabled(false);
 		});
 	}
@@ -252,12 +252,13 @@ public class AnimatorApp extends JFrame {
 	public String message() {		//instrukcja do programu
 		return 	"1) Click on 'Animate/Stop' button to start animation or pause it.\n" +
 				"   'Add' button should be available from now on.\n" +
-				"2) Click on 'Add' button to add new figures to animation\n" +
-				"3) You can change speed of animation (3 modes)\n" +
-				"4) You can also change color of both rectangles and ellipses drawn on the screen at your discretion\n" +
-				"5) Next interesting function is freezing only one of two available shapes\n" +
-				"6)	The last but definitely not least is possibility of making figures spin in place. (very fast) \n" +
-				"7) Of course button 'Reset' will reset whole app at any moment\n" +
+				"2) Click on 'Add' button to add new figures to animation.\n" +
+				"3) You can change speed of animation. (3 modes)\n" +
+				"4) You can also change color of both rectangles and ellipses drawn on the screen at your discretion.\n" +
+				"5) Speaking of colors. All figures on the screen will randomly change them as long as you press the mouse.\n" +
+				"6) Next interesting function is freezing only one of two available shapes.\n" +
+				"7)	The last but definitely not least is possibility of making figures spin in place. (very fast) \n" +
+				"8) Of course button 'Reset' will reset whole app at any moment.\n" +
 				"That's all. Have fun :)";
 	}
 
